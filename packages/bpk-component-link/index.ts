@@ -16,13 +16,12 @@
  * limitations under the License.
  */
 
-/* @flow strict */
-
 import BpkButtonLink from './src/BpkButtonLink';
-import BpkLink from './src/BpkLink';
+import BpkLink, { type Props as BpkLinkProps } from './src/BpkLink';
 import themeAttributes, {
   linkAlternateThemeAttributes,
 } from './src/themeAttributes';
 
 export default BpkLink;
 export { BpkButtonLink, themeAttributes, linkAlternateThemeAttributes };
+export type { BpkLinkProps };

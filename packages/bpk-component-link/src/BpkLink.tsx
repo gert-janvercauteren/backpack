@@ -16,10 +16,13 @@
  * limitations under the License.
  */
 
-/* @flow strict */
 import PropTypes from 'prop-types';
-import type { Node } from 'react';
-import { forwardRef } from 'react';
+import {
+  forwardRef,
+  type ReactNode,
+  type MouseEvent,
+  type AnchorHTMLAttributes,
+} from 'react';
 
 import { cssModules } from '../../bpk-react-utils';
 
@@ -31,18 +34,19 @@ import STYLES from './BpkLink.module.scss';
 
 const getClassName = cssModules(STYLES);
 
-type Props = {
-  children: Node,
-  href: ?string,
-  className: ?string,
-  onClick: ?(event: SyntheticEvent<>) => mixed,
-  blank: boolean,
-  rel: ?string,
-  alternate: boolean,
-  implicit: boolean,
-};
+export interface Props
+  extends Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'href' | 'onClick'> {
+  children: ReactNode;
+  href?: string | null;
+  className?: string | null;
+  onClick?: (event: MouseEvent<HTMLAnchorElement>) => unknown;
+  blank?: boolean;
+  rel?: string | null;
+  alternate?: boolean;
+  implicit?: boolean;
+}
 
-const BpkLink = forwardRef((props: Props, ref) => {
+const BpkLink = forwardRef<HTMLAnchorElement, Props>((props, ref) => {
   const {
     alternate,
     blank,
@@ -80,7 +84,6 @@ const BpkLink = forwardRef((props: Props, ref) => {
   }
 
   return (
-    // $FlowFixMe[cannot-spread-inexact] - inexact rest. See 'decisions/flowfixme.md'.
     <a
       className={classNames.join(' ')}
       href={href}
