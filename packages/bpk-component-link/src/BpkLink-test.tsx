@@ -16,8 +16,6 @@
  * limitations under the License.
  */
 
-/* @flow strict */
-
 import { createRef } from 'react';
 
 import { render } from '@testing-library/react';
