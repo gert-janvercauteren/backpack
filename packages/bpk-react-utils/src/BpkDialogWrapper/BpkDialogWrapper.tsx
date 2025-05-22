@@ -87,16 +87,11 @@ export const BpkDialogWrapper = ({
     const dialog = document.getElementById(`${id}`);
     const dialogWithPolyfill = document.getElementById(`${id}-polyfill`);
 
-    const handleBackdropClick = (modal: HTMLElement | null) => {
-      if (closeOnScrimClick && modal) {
-        modal.addEventListener('click', (event: MouseEvent | PointerEvent) => {
-          const { target } = event;
-
-          if (target === modal) {
-            onClose(event, { source: "DOCUMENT_CLICK" });
-            event.stopPropagation();
-          }
-        });
+    const handleBackdropClick = (event: MouseEvent | PointerEvent) => {
+      const { target } = event;
+      if (target === dialog || target === dialogWithPolyfill) {
+        onClose(event, { source: 'DOCUMENT_CLICK' });
+        event.stopPropagation();
       }
     };
 
@@ -117,12 +112,16 @@ export const BpkDialogWrapper = ({
 
       if (dialogWithPolyfill) {
         setDialogTarget(dialogWithPolyfill);
-        handleBackdropClick(dialogWithPolyfill);
+        if (closeOnScrimClick) {
+          dialogWithPolyfill.addEventListener('click', handleBackdropClick);
+        }
         window.addEventListener('keydown', handleKeyDown);
       } else {
         setDialogTarget(dialog);
       }
-      handleBackdropClick(dialog);
+      if (closeOnScrimClick && dialog) {
+        dialog.addEventListener('click', handleBackdropClick);
+      }
     } else {
       ref.current?.close?.();
     }
@@ -131,6 +130,10 @@ export const BpkDialogWrapper = ({
     return () => {
       setPageProperties({ isDialogOpen: false })
       window.removeEventListener('keydown', handleKeyDown);
+      if (closeOnScrimClick) {
+        dialog?.removeEventListener('click', handleBackdropClick);
+        dialogWithPolyfill?.removeEventListener('click', handleBackdropClick);
+      }
     };
   }, [id, isOpen, onClose, closeOnEscPressed, closeOnScrimClick]);
 
